@@ -7,6 +7,7 @@
 // @grant        none
 // @include      https://forum.paradoxplaza.com/forum/index.php*
 // @updateURL    https://github.com/napstr/pdiwwavatars/raw/master/pdiwwavatars.user.js
+// @downloadURL    https://github.com/napstr/pdiwwavatars/raw/master/pdiwwavatars.user.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // ==/UserScript==
 
