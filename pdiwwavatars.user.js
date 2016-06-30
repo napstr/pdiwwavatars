@@ -119,7 +119,6 @@ function checkForPWATags() {
     //add to data
     var found = false;
     if (pwaurl.length > 0) {
-      console.log(nick + " " + id + " " + pwaurl);
       for (var k = 0; k < data.players.length; k++) {
         var player = data.players[k];
         if (player.id == id) {
