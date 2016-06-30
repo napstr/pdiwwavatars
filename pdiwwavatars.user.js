@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pdiwwavatars
 // @namespace    http://tampermonkey.net/
-// @version      0.5.3
+// @version      0.5.4
 // @description  Changes avatars for users in Paradox Interactive forums
 // @author       https://github.com/napstr
 // @grant        none
@@ -18,11 +18,6 @@ var boilerplate_ids = ["1072860",//npstr
                "448345",//alxeu
                "1056425", //duke dan
                "91719", //euroo7
-               "889046", //madchemist
-               "928304", //2knikk
-               "1024075", //wombat
-               "57094", //k-59
-               "849376", //rovsea
               ];
 var boilerplate_imgurls = ["vQNKh5v.jpg",
                            "4hgEPHc.png",
@@ -31,11 +26,6 @@ var boilerplate_imgurls = ["vQNKh5v.jpg",
                            "Di8N4nL.png",
                            "yGH71zm.png",
                            "2uTAHCc.png",
-                           "pmnAV5B.png",
-                           "TEKgwoR.jpg",
-                           "ryb0Cm8.jpg",
-                           "2JP6QML.png",
-                           "WS6PgII.png",
                           ];
 var boilerplate_nicks = ["npstr",
                          "Audren",
@@ -44,11 +34,6 @@ var boilerplate_nicks = ["npstr",
                          "alxeu",
                          "Duke Dan \"the Man\"",
                          "EUROO7",
-                         "madchemist",
-                         "2kNikk",
-                         "deathbywombat",
-                         "k-59",
-                         "Rovsea",
                         ];
 
 var IMGURL = "https://i.imgur.com/";
