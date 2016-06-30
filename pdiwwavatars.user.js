@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pdiwwavatars
 // @namespace    http://tampermonkey.net/
-// @version      0.7.5
+// @version      0.8.5
 // @description  Changes avatars for users in Paradox Interactive forums
 // @author       https://github.com/napstr
 // @grant        none
@@ -78,17 +78,18 @@ function restoreData() {
 }
 
 function loadData() {
-  var loadedData = JSON.parse(storage.getItem('data'));
+  var loadedData = JSON.parse(storage.getItem('pdiwwavatars_data'));
   return loadedData;
 }
 
 function saveData() {
-  storage.setItem('data', JSON.stringify(data));
+  storage.setItem('pdiwwavatars_data', JSON.stringify(data));
 }
 
 function checkForPWATags() {
 //check signatures for pwa tags
   var messages = document.getElementsByClassName("message");
+  //length -1 cause the unwritten message at the bottom of the page doesnt have a signature
   for (var j = 0; j < messages.length - 1; j++) {
     var message = messages[j];
 
