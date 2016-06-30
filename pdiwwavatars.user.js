@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pdiwwavatars
 // @namespace    http://tampermonkey.net/
-// @version      0.6.5
+// @version      0.7.5
 // @description  Changes avatars for users in Paradox Interactive forums
 // @author       https://github.com/napstr
 // @grant        none
@@ -35,6 +35,9 @@ var data = restoreData();
 
   //alerts and conversations popups
   waitForKeyElements(".secondaryContent", doIt);
+
+  //posted and edited message
+  waitForKeyElements(".messageUserBlock", doIt);
 
   checkForPWATags();
   saveData();
