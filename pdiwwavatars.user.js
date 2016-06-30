@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         pdiwwavatars
 // @namespace    http://tampermonkey.net/
-// @version      0.2.1
+// @version      0.2.2
 // @description  Changes avatars for users in Paradox Interactive forums
 // @author       https://github.com/napstr
 // @grant        none
 // @include      https://forum.paradoxplaza.com/forum/index.php*
 // @updateURL    https://github.com/napstr/pdiwwavatars/raw/master/pdiwwavatars.user.js
-// @downloadURL    https://github.com/napstr/pdiwwavatars/raw/master/pdiwwavatars.user.js
+// @downloadURL  https://github.com/napstr/pdiwwavatars/raw/master/pdiwwavatars.user.js
 // @require      https://gist.github.com/raw/2625891/waitForKeyElements.js
 // ==/UserScript==
 
@@ -15,11 +15,17 @@ var numbers = ["1072860",//npstr
                "856290", //audren
                "215982", //wagonlitz
                "503752", //cliges
+               "1022496", //jackson
+               "448345",//alxeu
+               "1056425", //duke dan
               ];
 var pics = ["https://i.imgur.com/vQNKh5v.jpg",
             "https://i.imgur.com/4hgEPHc.png",
             "https://i.imgur.com/GKKPY7O.png",
             "https://i.imgur.com/jk4jIt2.png",
+            "https://i.imgur.com/1q1tu85.gif",
+            "https://i.imgur.com/Di8N4nL.png",
+            "https://i.imgur.com/yGH71zm.png",
            ];
 
 (function() {
@@ -52,7 +58,9 @@ var pics = ["https://i.imgur.com/vQNKh5v.jpg",
     var x = document.getElementsByClassName("Av" + numbers[j] + "l");
     for (var i = 0; i < x.length; i++) {
       var elem = x[i];
-      elem.getElementsByTagName("*")[0].src = pics[j];
+      var img = elem.getElementsByTagName("*")[0];
+      img.src = pics[j];
+
     }
 
   }
@@ -76,7 +84,10 @@ function updateInOverlays () {
     var x = document.getElementsByClassName("Av" + numbers[j] + "l");
     for (var i = 0; i < x.length; i++) {
       var elem = x[i];
-      elem.getElementsByTagName("img")[0].src = pics[j];
+      var img = elem.getElementsByTagName("*")[0];
+      img.src = pics[j];
+      img.height = "192";
+      img.width = "192";
     }
   }
 }
