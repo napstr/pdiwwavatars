@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pdiwwavatars
 // @namespace    http://tampermonkey.net/
-// @version      0.8.5
+// @version      0.9.5
 // @description  Changes avatars for users in Paradox Interactive forums
 // @author       https://github.com/napstr
 // @grant        none
@@ -24,13 +24,15 @@ var boilerplate_nicks = ["npstr",
 var IMGURL = "https://i.imgur.com/";
 var storage = localStorage;
 var data = restoreData();
+var deletecommand = "deleete.plz";
 
 
 (function() {
      
+  checkForPWATags();
   saveData();
 
-  //hook to apply the userscript in overlays
+    //hook to apply the userscript in overlays
   waitForKeyElements(".xenOverlay", doIt);
 
   //alerts and conversations popups
@@ -38,9 +40,6 @@ var data = restoreData();
 
   //posted and edited message
   waitForKeyElements(".messageUserBlock", doIt);
-
-  checkForPWATags();
-  saveData();
 
   doIt();
 
@@ -112,28 +111,37 @@ function checkForPWATags() {
 
     // this regex looks for a case insensitive pattern of qwertzu.xyz between [pwaurl] tags
     //this represents how imgur urls look like right now: a 7 digit name, a point, and a 3 digit file extension
-    var regexPwaurl = /(\[pwaurl\])[a-z0-9]{7}.[a-z0-9]{3}(\[\/pwaurl])/gi;
+    var regexPwaurl = /(\[pwaurl\])[a-z0-9]{7}.[a-z]{3}(\[\/pwaurl])/gi;
     while (r = regexPwaurl.exec(signature)) {
       pwaurl = signature.substring(r.index + 8, r.index + 19);
     }
 
     //add to data
-    var found = false;
-    if (pwaurl.length > 0) {
+    var playerInDB = false;
+    if (pwaurl.length > 0 && pwaurl != deletecommand) {
       for (var k = 0; k < data.players.length; k++) {
         var player = data.players[k];
         if (player.id == id) {
           player.imgurl = pwaurl;
-          found = true;
+          playerInDB = true;
           break;
         }
       }
-      if (!found) {
+      if (!playerInDB) {
         var player = {};
         player.nick = nick;
         player.id = id;
         player.imgurl = pwaurl;
         data.players[data.players.length] = player;
+      }
+    }
+    //delete command?
+    else if (pwaurl == deletecommand) {
+      for (var k = 0; k < data.players.length; k++) {
+        if (data.players[k].nick == nick) {
+          data.players.splice(k, 1);
+          break;
+        }
       }
     }
   }
