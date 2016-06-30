@@ -12,28 +12,13 @@
 // ==/UserScript==
 
 var boilerplate_ids = ["1072860",//npstr
-               "856290", //audren
-               "215982", //wagonlitz
-               "1022496", //jackson
-               "448345",//alxeu
-               "1056425", //duke dan
-               "91719", //euroo7
-              ];
-var boilerplate_imgurls = ["vQNKh5v.jpg",
-                           "4hgEPHc.png",
+                       "215982", //wagonlitz
+                      ];
+var boilerplate_imgurls = ["83w7NzQ.png",
                            "GKKPY7O.png",
-                           "1q1tu85.gif",
-                           "Di8N4nL.png",
-                           "yGH71zm.png",
-                           "2uTAHCc.png",
                           ];
 var boilerplate_nicks = ["npstr",
-                         "Audren",
                          "Wagonlitz",
-                         "Jacksonian Missionary",
-                         "alxeu",
-                         "Duke Dan \"the Man\"",
-                         "EUROO7",
                         ];
 
 var IMGURL = "https://i.imgur.com/";
