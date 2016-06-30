@@ -86,12 +86,10 @@ function saveData() {
 function checkForPWATags() {
 //check signatures for pwa tags
   var messages = document.getElementsByClassName("message");
-  console.log(messages.length);
   for (var j = 0; j < messages.length - 1; j++) {
     var message = messages[j];
 
-    var author = message.getAttribute("data-author");
-    console.log(author);
+    var nick = message.getAttribute("data-author");
 
     var messageuserinfo = message.getElementsByClassName("messageUserInfo")[0];
     var link = messageuserinfo.getElementsByTagName("a")[0];
@@ -104,28 +102,35 @@ function checkForPWATags() {
       //actually we're just interest in the last one, to ignore any weird usernames that may or may not happen
       id = href.substring(r.index + 1, href.length - 1);
     }
-    console.log(id);
 
     var signature = message.getElementsByClassName("signature")[0].innerHTML;
-    //console.log(signature);
     var pwaurl = "";
 
     // this regex looks for a case insensitive pattern of qwertzu.xyz between [pwaurl] tags
     //this represents how imgur urls look like right now: a 7 digit name, a point, and a 3 digit file extension
-    var regexPwaurl = /(\[pwaurl\])[a-z]{7}.[a-z]{3}(\[\/pwaurl])/gi;
+    var regexPwaurl = /(\[pwaurl\])[a-z0-9]{7}.[a-z0-9]{3}(\[\/pwaurl])/gi;
     while (r = regexPwaurl.exec(signature)) {
       pwaurl = signature.substring(r.index + 8, r.index + 19);
     }
-    console.log(pwaurl);
 
     //add to data
-    //TODO add new player
+    var found = false;
     if (pwaurl.length > 0) {
+      console.log(nick + " " + id + " " + pwaurl);
       for (var k = 0; k < data.players.length; k++) {
         var player = data.players[k];
         if (player.id == id) {
           player.imgurl = pwaurl;
+          found = true;
+          break;
         }
+      }
+      if (!found) {
+        var player = {};
+        player.nick = nick;
+        player.id = id;
+        player.imgurl = pwaurl;
+        data.players[data.players.length] = player;
       }
     }
   }
