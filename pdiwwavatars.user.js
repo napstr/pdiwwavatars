@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pdiwwavatars
 // @namespace    http://tampermonkey.net/
-// @version      0.5.4
+// @version      0.6.5
 // @description  Changes avatars for users in Paradox Interactive forums
 // @author       https://github.com/napstr
 // @grant        none
