@@ -6,6 +6,7 @@
 // @author       https://github.com/napstr
 // @grant        none
 // @include      https://forum.paradoxplaza.com/forum/index.php?threads*
+// @updateURL    https://github.com/napstr/pdiwwavatars/raw/master/pdiwwavatars.user.js
 // ==/UserScript==
 
 (function() {
