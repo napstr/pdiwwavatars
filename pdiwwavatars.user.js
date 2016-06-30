@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pdiwwavatars
 // @namespace    http://tampermonkey.net/
-// @version      0.2.3
+// @version      0.3.3
 // @description  Changes avatars for users in Paradox Interactive forums
 // @author       https://github.com/napstr
 // @grant        none
@@ -43,9 +43,32 @@ var pics = ["https://i.imgur.com/vQNKh5v.jpg",
 (function() {
     
   //hook to apply the userscript in overlays
-  waitForKeyElements(".xenOverlay", updateInOverlays);
+  waitForKeyElements(".xenOverlay", doIt);
+
+  //alerts and conversations popups
+  waitForKeyElements(".secondaryContent", doIt);
+
+  doIt();
     
+})();
+
+function doIt () {
   for (var j = 0; j < numbers.length; j++) {
+    //members posted in thread overlay
+    var x = document.getElementsByClassName("Av" + numbers[j] + "s");
+    for (var i = 0; i < x.length; i++) {
+      var elem = x[i];
+      elem.getElementsByTagName("*")[0].src = pics[j];
+      
+      //who replied (not the overlay, but the one on its own site)
+      var asd = elem.getElementsByClassName("img s")[0];
+      if (typeof asd != 'undefined') {
+        asd.style.backgroundImage = "url('" + pics[j] + "')";
+        asd.style.backgroundSize = "100%";
+      }
+    }
+
+
     var x = document.getElementsByClassName("Av" + numbers[j] + "m");
     for (var i = 0; i < x.length; i++) {
       var elem = x[i];
@@ -58,46 +81,8 @@ var pics = ["https://i.imgur.com/vQNKh5v.jpg",
         asd.style.backgroundSize = "100%";
       }
       //$('img.miniMe')[0].src = pics[j]; this needs more work
-      
     }
-
-    var x = document.getElementsByClassName("Av" + numbers[j] + "s");
-    for (var i = 0; i < x.length; i++) {
-      var elem = x[i];
-      elem.getElementsByTagName("*")[0].src = pics[j];
-    //who replied on own site
-      var asd = elem.getElementsByClassName("img s")[0];
-      if (typeof asd != 'undefined') {
-        asd.style.backgroundImage = "url('" + pics[j] + "')";
-        asd.style.backgroundSize = "100%";
-      }
-    }
-
-    var x = document.getElementsByClassName("Av" + numbers[j] + "l");
-    for (var i = 0; i < x.length; i++) {
-      var elem = x[i];
-      var img = elem.getElementsByTagName("*")[0];
-      img.src = pics[j];
-
-    }
-
-  }
-})();
-
-function updateInOverlays () {
-  for (var j = 0; j < numbers.length; j++) {
-    //members posted in thread overlay
-    var x = document.getElementsByClassName("Av" + numbers[j] + "s");
-    for (var i = 0; i < x.length; i++) {
-      var elem = x[i];
-
-      var asd = elem.getElementsByClassName("img s")[0];
-      if (typeof asd != 'undefined') {
-        asd.style.backgroundImage = "url('" + pics[j] + "')";
-        asd.style.backgroundSize = "100%";
-      }
-    }
-
+  
     //profile overlay
     var x = document.getElementsByClassName("Av" + numbers[j] + "l");
     for (var i = 0; i < x.length; i++) {
@@ -106,14 +91,6 @@ function updateInOverlays () {
       img.src = pics[j];
       img.height = "192";
       img.width = "192";
-    }
-
-
-    //new post posted
-    var x = document.getElementsByClassName("Av" + numbers[j] + "m");
-    for (var i = 0; i < x.length; i++) {
-      var elem = x[i];
-      elem.getElementsByTagName("*")[0].src = pics[j];
     }
   }
 }
