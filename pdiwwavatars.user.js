@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         pdiwwavatars
 // @namespace    http://tampermonkey.net/
-// @version      0.4.3
+// @version      0.5.3
 // @description  Changes avatars for users in Paradox Interactive forums
 // @author       https://github.com/napstr
 // @grant        none
@@ -14,7 +14,6 @@
 var boilerplate_ids = ["1072860",//npstr
                "856290", //audren
                "215982", //wagonlitz
-               "503752", //cliges
                "1022496", //jackson
                "448345",//alxeu
                "1056425", //duke dan
@@ -25,47 +24,50 @@ var boilerplate_ids = ["1072860",//npstr
                "57094", //k-59
                "849376", //rovsea
               ];
-var boilerplate_imgurls = ["https://i.imgur.com/vQNKh5v.jpg",
-            "https://i.imgur.com/4hgEPHc.png",
-            "https://i.imgur.com/GKKPY7O.png",
-            "https://i.imgur.com/jk4jIt2.png",
-            "https://i.imgur.com/1q1tu85.gif",
-            "https://i.imgur.com/Di8N4nL.png",
-            "https://i.imgur.com/yGH71zm.png",
-            "https://i.imgur.com/2uTAHCc.png",
-            "https://i.imgur.com/pmnAV5B.png",
-            "https://i.imgur.com/TEKgwoR.jpg",
-            "https://i.imgur.com/ryb0Cm8.jpg",
-            "https://i.imgur.com/2JP6QML.png",
-            "https://i.imgur.com/WS6PgII.png",
-           ];
+var boilerplate_imgurls = ["vQNKh5v.jpg",
+                           "4hgEPHc.png",
+                           "GKKPY7O.png",
+                           "1q1tu85.gif",
+                           "Di8N4nL.png",
+                           "yGH71zm.png",
+                           "2uTAHCc.png",
+                           "pmnAV5B.png",
+                           "TEKgwoR.jpg",
+                           "ryb0Cm8.jpg",
+                           "2JP6QML.png",
+                           "WS6PgII.png",
+                          ];
 var boilerplate_nicks = ["npstr",
-             "Audren",
-             "Wagonlitz",
-             "Cliges",
-             "Jacksonian Missionary",
-             "alxeu",
-             "Duke Dan \"the Man\"",
-             "EUROO7",
-             "madchemist",
-             "2kNikk",
-             "deathbywombat",
-             "k-59",
-             "Rovsea",
-            ];
+                         "Audren",
+                         "Wagonlitz",
+                         "Jacksonian Missionary",
+                         "alxeu",
+                         "Duke Dan \"the Man\"",
+                         "EUROO7",
+                         "madchemist",
+                         "2kNikk",
+                         "deathbywombat",
+                         "k-59",
+                         "Rovsea",
+                        ];
 
+var IMGURL = "https://i.imgur.com/";
 var storage = localStorage;
-var data = restoreData();;
+var data = restoreData();
 
-(function() {  
+
+(function() {
      
-  saveData(data);
+  saveData();
 
   //hook to apply the userscript in overlays
   waitForKeyElements(".xenOverlay", doIt);
 
   //alerts and conversations popups
   waitForKeyElements(".secondaryContent", doIt);
+
+  checkForPWATags();
+  saveData();
 
   doIt();
 
@@ -95,10 +97,9 @@ function restoreData() {
     loadedData.players = boilerplateData.players;
   }
 
-  for (var i = 0; i < loadedData.length; i++) {
-    var player = loadedData[i];
-    console.log(player.id + " " + player.nick + " " + player.imgurl);
-  }
+  //check if stored data is old
+  if (loadedData.players[0].imgurl.length != 11)
+    loadedData = boilerplateData;
 
   return loadedData;
 }
@@ -108,11 +109,60 @@ function loadData() {
   return loadedData;
 }
 
-function saveData(data) {
-  storage = storage.setItem('data', JSON.stringify(data));
+function saveData() {
+  storage.setItem('data', JSON.stringify(data));
+}
+
+function checkForPWATags() {
+//check signatures for pwa tags
+  var messages = document.getElementsByClassName("message");
+  console.log(messages.length);
+  for (var j = 0; j < messages.length - 1; j++) {
+    var message = messages[j];
+
+    var author = message.getAttribute("data-author");
+    console.log(author);
+
+    var messageuserinfo = message.getElementsByClassName("messageUserInfo")[0];
+    var link = messageuserinfo.getElementsByTagName("a")[0];
+    var href = link.getAttribute("href");
+
+    var r;
+    var id = "";
+    var regexId = /.[0-9]+\//g;
+    while (r = regexId.exec(href)) {
+      //actually we're just interest in the last one, to ignore any weird usernames that may or may not happen
+      id = href.substring(r.index + 1, href.length - 1);
+    }
+    console.log(id);
+
+    var signature = message.getElementsByClassName("signature")[0].innerHTML;
+    //console.log(signature);
+    var pwaurl = "";
+
+    // this regex looks for a case insensitive pattern of qwertzu.xyz between [pwaurl] tags
+    //this represents how imgur urls look like right now: a 7 digit name, a point, and a 3 digit file extension
+    var regexPwaurl = /(\[pwaurl\])[a-z]{7}.[a-z]{3}(\[\/pwaurl])/gi;
+    while (r = regexPwaurl.exec(signature)) {
+      pwaurl = signature.substring(r.index + 8, r.index + 19);
+    }
+    console.log(pwaurl);
+
+    //add to data
+    //TODO add new player
+    if (pwaurl.length > 0) {
+      for (var k = 0; k < data.players.length; k++) {
+        var player = data.players[k];
+        if (player.id == id) {
+          player.imgurl = pwaurl;
+        }
+      }
+    }
+  }
 }
 
 function doIt () {
+
   var players = data.players;
   for (var j = 0; j < players.length; j++) {
     var player = players[j];
@@ -120,12 +170,12 @@ function doIt () {
     var x = document.getElementsByClassName("Av" + player.id + "s");
     for (var i = 0; i < x.length; i++) {
       var elem = x[i];
-      elem.getElementsByTagName("*")[0].src = player.imgurl;
+      elem.getElementsByTagName("*")[0].src = IMGURL + player.imgurl;
       
       //who replied (not the overlay, but the one on its own site)
       var asd = elem.getElementsByClassName("img s")[0];
       if (typeof asd != 'undefined') {
-        asd.style.backgroundImage = "url('" + player.imgurl + "')";
+        asd.style.backgroundImage = "url('" + IMGURL + player.imgurl + "')";
         asd.style.backgroundSize = "100%";
       }
     }
@@ -134,12 +184,12 @@ function doIt () {
     var x = document.getElementsByClassName("Av" + player.id + "m");
     for (var i = 0; i < x.length; i++) {
       var elem = x[i];
-      elem.getElementsByTagName("*")[0].src = player.imgurl;
+      elem.getElementsByTagName("*")[0].src = IMGURL + player.imgurl;
 
       //profile
       var asd = elem.getElementsByClassName("img m")[0];
       if (typeof asd != 'undefined') {
-        asd.style.backgroundImage = "url('" + player.imgurl + "')";
+        asd.style.backgroundImage = "url('" + IMGURL + player.imgurl + "')";
         asd.style.backgroundSize = "100%";
       }
       //$('img.miniMe')[0].src = player.imgurl; this needs more work
@@ -150,7 +200,7 @@ function doIt () {
     for (var i = 0; i < x.length; i++) {
       var elem = x[i];
       var img = elem.getElementsByTagName("*")[0];
-      img.src = player.imgurl;
+      img.src = IMGURL + player.imgurl;
       img.height = "192";
       img.width = "192";
     }
