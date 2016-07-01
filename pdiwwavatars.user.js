@@ -106,41 +106,45 @@ function checkForPWATags() {
       id = href.substring(r.index + 1, href.length - 1);
     }
 
-    var signature = message.getElementsByClassName("signature")[0].innerHTML;
-    var pwaurl = "";
+    //users without a sig may break the fun
+    var foo = message.getElementsByClassName("signature");
+    if (foo.length > 0) {
+      var signature = message.getElementsByClassName("signature")[0].innerHTML;
+      var pwaurl = "";
 
-    // this regex looks for a case insensitive pattern of qwertzu.xyz between [pwaurl] tags
-    //this represents how imgur urls look like right now: a 7 digit name, a point, and a 3 digit file extension
-    var regexPwaurl = /(\[pwaurl\])[a-z0-9]{7}.[a-z]{3}(\[\/pwaurl])/gi;
-    while (r = regexPwaurl.exec(signature)) {
-      pwaurl = signature.substring(r.index + 8, r.index + 19);
-    }
+      // this regex looks for a case insensitive pattern of qwertzu.xyz between [pwaurl] tags
+      //this represents how imgur urls look like right now: a 7 digit name, a point, and a 3 digit file extension
+      var regexPwaurl = /(\[pwaurl\])[a-z0-9]{7}.[a-z]{3}(\[\/pwaurl])/gi;
+      while (r = regexPwaurl.exec(signature)) {
+        pwaurl = signature.substring(r.index + 8, r.index + 19);
+      }
 
-    //add to data
-    var playerInDB = false;
-    if (pwaurl.length > 0 && pwaurl != deletecommand) {
-      for (var k = 0; k < data.players.length; k++) {
-        var player = data.players[k];
-        if (player.id == id) {
+      //add to data
+      var playerInDB = false;
+      if (pwaurl.length > 0 && pwaurl != deletecommand) {
+        for (var k = 0; k < data.players.length; k++) {
+          var player = data.players[k];
+          if (player.id == id) {
+            player.imgurl = pwaurl;
+            playerInDB = true;
+            break;
+          }
+        }
+        if (!playerInDB) {
+          var player = {};
+          player.nick = nick;
+          player.id = id;
           player.imgurl = pwaurl;
-          playerInDB = true;
-          break;
+          data.players[data.players.length] = player;
         }
       }
-      if (!playerInDB) {
-        var player = {};
-        player.nick = nick;
-        player.id = id;
-        player.imgurl = pwaurl;
-        data.players[data.players.length] = player;
-      }
-    }
-    //delete command?
-    else if (pwaurl == deletecommand) {
-      for (var k = 0; k < data.players.length; k++) {
-        if (data.players[k].nick == nick) {
-          data.players.splice(k, 1);
-          break;
+      //delete command?
+      else if (pwaurl == deletecommand) {
+        for (var k = 0; k < data.players.length; k++) {
+          if (data.players[k].nick == nick) {
+            data.players.splice(k, 1);
+            break;
+          }
         }
       }
     }
